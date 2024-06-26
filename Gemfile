@@ -11,3 +11,7 @@ gem "ferrum", git: "https://github.com/rubycdp/ferrum.git", branch: "main"
 gem "rotp", "~> 6.3"
 
 gem "mini_magick", "~> 4.13"
+
+gem "rufo", "~> 0.18.0"
+
+gem "faker", "~> 3.4"

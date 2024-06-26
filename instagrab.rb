@@ -3,8 +3,9 @@ require "ferrum"
 require_relative "./onetime_pass"
 require_relative "./utils"
 require_relative "./browser"
+require_relative "./proxies"
 
-proxy = "socks5://51.91.197.157:3072"
+proxy = Proxies.get_random
 
 modal_image = <<-JS
   (function() {
@@ -39,7 +40,7 @@ class Instagrab
     end
   end
 
-  def initialize
+  def initialize(proxy_url = nil)
     @username = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field username`
     @password = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field password`
     @one_time = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field "one-time password"`
@@ -215,4 +216,6 @@ class Instagrab
   end
 end
 
-Instagrab.new
+if __FILE__ == $0
+  Instagrab.new
+end
