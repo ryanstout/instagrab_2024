@@ -20,9 +20,12 @@ GEM
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     mini_magick (4.13.1)
+    mini_portile2 (2.8.7)
     public_suffix (5.1.1)
     rotp (6.3.0)
     rufo (0.18.0)
+    sqlite3 (2.0.2)
+      mini_portile2 (~> 2.8.0)
     webrick (1.8.1)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
@@ -37,6 +40,7 @@ DEPENDENCIES
   mini_magick (~> 4.13)
   rotp (~> 6.3)
   rufo (~> 0.18.0)
+  sqlite3 (~> 2.0)
 
 BUNDLED WITH
    2.1.4

@@ -52,24 +52,6 @@ class Instagrab
 
     # @page.network.intercept #(request_stage: :Response)
     @page.network.subscribe
-    # @page.on(:request) do |request|
-    #   puts "REQUEST: #{request.url}"
-    #   request.continue
-    # end
-    # @page.on("Network.responseReceived") do |response|
-    #   binding.irb
-    #   puts "RESPONSE: #{response.url}"
-    #   if response.url.match?(jpg_regex)
-    #     response.body do |body|
-    #       # Response should be a
-    #       image = MiniMagick::Image.read(body)
-
-    #       if image.width > 500 || image.height > 500
-    #         cache_image(response.url, body)
-    #       end
-    #     end
-    #   end
-    # end
 
     login()
 

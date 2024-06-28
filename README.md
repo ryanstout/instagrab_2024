@@ -3,6 +3,12 @@
 Pull instagram for fun
 
 
+# Add proxies to the pool with
+
+`bundle exec ruby proxies.rb {socks5://host:port}`
+
+
+
 
 # TODOS:
 - 
@@ -18,3 +24,4 @@ ig: winfreddamore
 
 # IG
 darwin_marksdarwin_marks / a2oEpTV1rY6AD9vSTlWnFAFS
+

@@ -171,3 +171,16 @@ def wait_for_page_fully_loaded(page, timeout = 3 * 60)
 
   puts "Didn't complete"
 end
+
+def set_field_with_arrow(field, value)
+  field.focus
+
+  sleep 1 + rand
+
+  field.click
+  sleep 1 + rand
+
+  field.type(value)
+
+  sleep 2 + rand(3)
+end

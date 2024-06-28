@@ -2,13 +2,14 @@
 require_relative "./utils"
 require_relative "./browser"
 require_relative "./proxies"
+require_relative "./database"
 require "faker"
 
 class Hotmail
-  def initialize(full_name, email_prefix, password)
+  def initialize(proxy, full_name, email_prefix, password)
     @wait_time = 3 * 60
 
-    @browser = new_browser(Proxies.get_random)
+    @browser = new_browser(proxy)
     @page = @browser.create_page
 
     puts "Load page1"
@@ -126,30 +127,20 @@ class Hotmail
     sleep 15 + rand(6)
     wait_for_xpath(@page, "//button[text()='Yes']", @wait_time).click
   end
-
-  def set_field_with_arrow(field, value)
-    field.focus
-
-    sleep 1 + rand
-
-    field.click
-    sleep 1 + rand
-
-    field.type(value)
-
-    sleep 2 + rand(3)
-  end
 end
 
 if __FILE__ == $0
+  @db = Database.new
+
   full_name = Faker::Name.name
   email_prefix = (full_name.downcase.gsub(/[^a-z0-9. ]/, "").gsub(/\s+/, ".") + rand(100).to_s).gsub("..", ".").gsub("..", ".").gsub("..", ".").gsub("..", ".")
   password = Faker::Internet.password(min_length: 16, max_length: 25)
 
-  # Append the full name, email, and password to a users.json
-  File.open("users.json", "a") do |file|
-    file.puts({ full_name: full_name, email: email_prefix, password: password }.to_json)
-  end
+  proxy = Proxies.get_random
 
-  Hotmail.new(full_name, email_prefix, password)
+  @db.add_user(email_prefix, full_email, full_name, password, proxy)
+  Hotmail.new(proxy, full_name, email_prefix, password)
+
+  full_email = email_prefix + "@outlook.com"
+  @db.signed_up(full_email, proxy)
 end

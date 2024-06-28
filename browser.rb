@@ -39,7 +39,7 @@ def new_browser(proxy_url = nil)
     # "timezone": "America/Denver",
     },
     # window_size: [3296, 3054],
-    window_size: [3296, 2054],
+    window_size: [1296, 2054],
     # args: [' --proxy-server=#{proxy}'],
     **proxy_options,
   )
