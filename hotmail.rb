@@ -1,8 +1,8 @@
 # Create a hotmail account
 require_relative "./utils"
 require_relative "./browser"
-require_relative "./proxies"
-require_relative "./database"
+require_relative "./app/models/proxy_pool"
+require_relative "./app/models/user"
 require "faker"
 
 class Hotmail
@@ -130,17 +130,15 @@ class Hotmail
 end
 
 if __FILE__ == $0
-  @db = Database.new
-
   full_name = Faker::Name.name
   email_prefix = (full_name.downcase.gsub(/[^a-z0-9. ]/, "").gsub(/\s+/, ".") + rand(100).to_s).gsub("..", ".").gsub("..", ".").gsub("..", ".").gsub("..", ".")
   password = Faker::Internet.password(min_length: 16, max_length: 25)
 
-  proxy = Proxies.get_random
+  proxy = ProxyPool.get_random
 
-  @db.add_user(email_prefix, full_email, full_name, password, proxy)
+  user = User.add_user(email_prefix, full_email, full_name, password, proxy)
   Hotmail.new(proxy, full_name, email_prefix, password)
 
   full_email = email_prefix + "@outlook.com"
-  @db.signed_up(full_email, proxy)
+  user.signed_up(full_email, proxy)
 end

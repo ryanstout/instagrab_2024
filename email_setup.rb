@@ -3,9 +3,9 @@ require "ferrum"
 require_relative "./onetime_pass"
 require_relative "./utils"
 require_relative "./browser"
-require_relative "./proxies"
+require_relative "./app/models/proxy_pool"
 
-proxy_server = Proxies.get_random
+proxy_server = ProxyPool.get_random
 
 # Just start a browser and leave it open
 @browser = new_browser(proxy_server)

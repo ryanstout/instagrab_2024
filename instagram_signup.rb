@@ -2,7 +2,7 @@
 require_relative "./utils"
 require_relative "./browser"
 require_relative "./proxies"
-require_relative "./database"
+require_relative "./app/models/user"
 require "faker"
 
 class InstagramSignup
@@ -83,15 +83,14 @@ class InstagramSignup
     gets
 
     # Update the user to state=3
-    @db.db.execute("UPDATE users SET state=3 WHERE email = ?", [email])
+    user = User.where(email: email).first
+    user.update(state: 3)
   end
 end
 
 if __FILE__ == $0
-  @db = Database.new
-
   # Grab the first user where signed_up = True and ig_registered = False
-  user = @db.get_ig_unregistered_user
+  user = User.get_ig_unregistered_user
 
   InstagramSignup.new(user["email"], user["name"], user["username"], user["password"], user["proxy_id"])
 end

@@ -5,13 +5,12 @@
 require_relative "./utils"
 require_relative "./browser"
 require_relative "./proxies"
-require_relative "./database"
 require_relative "./instagrab"
+require_relative "./app/models/profile"
 require "faker"
 
 class InstagramPullFollowers < Instagrab
-  def initialize(db, username, password, one_time, profile_to_pull, proxy)
-    @db = db
+  def initialize(username, password, one_time, profile_to_pull, proxy)
     @wait_time = 3 * 60
 
     @username = username
@@ -52,7 +51,7 @@ class InstagramPullFollowers < Instagrab
     binding.irb
 
     followers.each do |profile_name|
-      @db.db.execute("INSERT INTO instagram_followers (profile, pulled) VALUES (?, ?)", [profile_to_pull, false])
+      Profile.create(profile_name: profile_to_pull, pulled: false, depth: 1)
     end
 
     binding.irb
@@ -64,15 +63,13 @@ if __FILE__ == $0
   # password = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field password`
   # one_time = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field "one-time password"`
 
-  db = Database.new
-
   # Get a random user who has registered for IG
-  user = db.db.execute("SELECT * FROM users WHERE state=3 ORDER BY RANDOM() LIMIT 1").first
+  user = User.where(state: 3).order("RANDOM()").first
 
   profile_to_pull = "shainblumphotography"
   # profile_to_pull = "lostupgrades"
   # proxy = Proxies.get_random
   proxy = nil
 
-  InstagramPullFollowers.new(db, user["username"], user["password"], one_time, profile_to_pull, proxy)
+  InstagramPullFollowers.new(user.email, user.password, one_time, profile_to_pull, proxy)
 end

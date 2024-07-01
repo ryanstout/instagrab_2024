@@ -2,7 +2,6 @@
 
 require "httparty"
 require "json"
-require_relative "../database"
 
 class ProxyCheapAPI
   include HTTParty
@@ -178,7 +177,6 @@ end
 if __FILE__ == $0
   quantity = ARGV[0].to_i
 
-  db = Database.new
   proxy_cheap = ProxyCheapAPI.new("498ceb96-c11a-42aa-8a2c-718a973651da", "83317f46-1cf4-4d5b-bf90-bf7668c34a0f")
 
   # result = proxy_cheap.fetch_proxies
@@ -197,7 +195,7 @@ if __FILE__ == $0
       # Add the result to the database
       results.each do |result|
         proxy_url = "socks5://#{result["connection"]["connectIp"]}:#{result["connection"]["sock5Port"]}"
-        db.add_proxy(proxy_url, "America/Denver")
+        ProxyPool.add_proxy(proxy_url, "America/Denver")
       end
 
       break
