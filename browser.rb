@@ -1,6 +1,19 @@
 require "ferrum"
+require "uri"
 
-def new_browser(proxy_url = nil)
+def parse_proxy_url(proxy_url)
+  puts "Parse: #{proxy_url}"
+  uri = URI.parse(proxy_url)
+
+  protocol = uri.scheme
+  host = uri.host
+  port = uri.port
+  user, pass = uri.userinfo.split(":") if uri.userinfo
+
+  return { protocol: protocol, host: host, port: port, user: user, password: pass }.compact.reject { |k, v| v.to_s.empty? }
+end
+
+def new_browser(proxy = nil)
   script = <<~JS
     if (key === 'document')
         return iframe.contentDocument || iframe.contentWindow.document;
@@ -14,15 +27,15 @@ def new_browser(proxy_url = nil)
     }
   JS
 
-  if proxy_url
-    # Split at the last :
-    host = proxy_url.split(":")[0..-2].join(":")
-    port = proxy_url.split(":")[-1]
+  if proxy
+    # Split parts of the proxy
+    proxy_url = proxy["proxy"]
+    proxy_parts = parse_proxy_url(proxy_url)
+    proxy_parts.delete("protocol")
+
+    puts "Running with proxy: #{proxy_parts.inspect}"
     proxy_options = {
-      proxy: {
-        host: host,
-        port: port,
-      },
+      proxy: proxy_parts,
     }
   else
     proxy_options = {}
@@ -43,8 +56,20 @@ def new_browser(proxy_url = nil)
     # args: [' --proxy-server=#{proxy}'],
     **proxy_options,
   )
-  # browser.command("Emulation.setTimezoneOverride", timezoneId: "America/Denver")
   browser.evaluate_on_new_document(script)
+  browser.instance_variable_set(:@__proxy, proxy)
+
+  # Wrap the create_page method to set the proxy
+  def browser.create_page
+    page = super
+    proxy = @__proxy
+
+    if @__proxy
+      puts "Setting timezone to: #{proxy["timezone_str"]}"
+      page.command("Emulation.setTimezoneOverride", timezoneId: proxy["timezone_str"])
+    end
+    page
+  end
 
   return browser
 end

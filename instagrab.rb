@@ -5,18 +5,6 @@ require_relative "./utils"
 require_relative "./browser"
 require_relative "./proxies"
 
-proxy = Proxies.get_random
-
-modal_image = <<-JS
-  (function() {
-    var div = document.querySelectorAll('article[role="presentation"]');
-
-    var mainDiv = div[0].querySelector('div')[0]
-
-
-  })()
-JS
-
 class Instagrab
   def url_hash(url)
     Digest::SHA256.hexdigest(url)

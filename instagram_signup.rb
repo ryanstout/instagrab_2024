@@ -93,5 +93,5 @@ if __FILE__ == $0
   # Grab the first user where signed_up = True and ig_registered = False
   user = @db.get_ig_unregistered_user
 
-  InstagramSignup.new(user["email"], user["name"], user["username"], user["password"], user["proxy"])
+  InstagramSignup.new(user["email"], user["name"], user["username"], user["password"], user["proxy_id"])
 end

@@ -5,7 +5,7 @@ class Database
 
   def initialize
     # Create a SQLite3 database in memory
-    @db = SQLite3::Database.new "db.sqlite3"
+    @db = SQLite3::Database.new "db/db.sqlite3"
     @db.results_as_hash = true
 
     # Create a table with specified fields
@@ -17,7 +17,7 @@ class Database
         full_name TEXT,
         password TEXT,
         state INTEGER DEFAULT 0,
-        proxy TEXT
+        proxy_id INTEGER
       );
     SQL
 
@@ -39,6 +39,7 @@ class Database
       CREATE TABLE IF NOT EXISTS proxy_pool (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         proxy TEXT NOT NULL,
+        timezone_str TEXT,
         state INTEGER DEFAULT 0
       );
     SQL
@@ -48,19 +49,19 @@ class Database
   end
 
   # We assign a proxy to a user when they are created, we want to always use that proxy
-  def add_user(email_prefix, email, full_name, password, proxy)
-    @db.execute("INSERT INTO users (email_prefix, email, full_name, password, state, proxy) VALUES (?, ?, ?, ?, ?, ?)", [email_prefix, email, full_name, password, 1, proxy])
+  def add_user(email_prefix, email, full_name, password, proxy_id)
+    @db.execute("INSERT INTO users (email_prefix, email, full_name, password, state, proxy_id) VALUES (?, ?, ?, ?, ?, ?)", [email_prefix, email, full_name, password, 1, proxy_id])
   end
 
-  def signed_up(email, proxy)
+  def signed_up(email, proxy_id)
     @db.execute("UPDATE users SET state=2 WHERE email = ?", [email])
 
     # Mark the proxy as assigned
-    @db.execute("UPDATE proxy_pool SET state = 2 WHERE proxy = ?", [proxy])
+    @db.execute("UPDATE proxy_pool SET state = 2 WHERE id = ?", [proxy_id])
   end
 
-  def add_proxy(proxy)
-    @db.execute("INSERT INTO proxy_pool (proxy, state) VALUES (?, ?)", [proxy, 0])
+  def add_proxy(proxy, timezone_str)
+    @db.execute("INSERT INTO proxy_pool (proxy, timezone_str, state) VALUES (?, ?, ?)", [proxy, timezone_str, 0])
   end
 
   # Grab a user who hasn't done the instagram registration
