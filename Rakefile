@@ -1,4 +1,6 @@
 $LOAD_PATH << "."
+require "bundler"
+require "bundler/cli"
 
 require "active_record"
 require "yaml"
@@ -24,4 +26,13 @@ namespace :db do
   task :environment do
     # ActiveRecord::Base.establish_connection(db_config['development'])
   end
+end
+
+task :console do
+  # Load the project-specific startup file
+  load "./env.rb"
+  User.connection # load the db connection
+
+  # Start the Bundler console
+  Bundler::CLI.start(["console"])
 end

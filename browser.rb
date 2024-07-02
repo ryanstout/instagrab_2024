@@ -1,5 +1,7 @@
 require "ferrum"
 require "uri"
+require "digest"
+require "fileutils"
 
 def parse_proxy_url(proxy_url)
   puts "Parse: #{proxy_url}"
@@ -10,7 +12,9 @@ def parse_proxy_url(proxy_url)
   port = uri.port
   user, pass = uri.userinfo.split(":") if uri.userinfo
 
-  return { protocol: protocol, host: host, port: port, user: user, password: pass }.compact.reject { |k, v| v.to_s.empty? }
+  # return { protocol: protocol, host: host, port: port, user: user, password: pass }.compact.reject { |k, v| v.to_s.empty? }
+  return { host: host, port: port, user: user, password: pass }.compact.reject { |k, v| v.to_s.empty? }
+  # return { 'proxy-server': proxy_url }
 end
 
 def new_browser(proxy = nil)
@@ -27,18 +31,41 @@ def new_browser(proxy = nil)
     }
   JS
 
+  other_options = {}
+  bos = {}
+
   if proxy
     # Split parts of the proxy
-    proxy_url = proxy["proxy"]
+    proxy_url = proxy.proxy
     proxy_parts = parse_proxy_url(proxy_url)
-    proxy_parts.delete("protocol")
+    # proxy_parts.delete("protocol")
+    # proxy_parts["user"] = nil
+    # proxy_parts["pass"] = nil
 
     puts "Running with proxy: #{proxy_parts.inspect}"
-    proxy_options = {
-      proxy: proxy_parts,
-    }
-  else
-    proxy_options = {}
+
+    # $proxy = Ferrum::Proxy.start(host: "127.0.0.1", port: 27493)
+    # # $proxy.rotate(**proxy_parts)
+    # $proxy.instance_variable_get(:@server).config[:ProxyURI] = URI.parse(proxy_uri)
+    # # puts "Running with proxy: #{proxy_url}"
+    # other_options[:proxy] = { host: $proxy.host, port: $proxy.port }
+
+    other_options[:proxy] = proxy_parts
+    # bos = {
+    #   "proxy-server": proxy_url,
+    # }
+  end
+
+  if false
+    # run with user_data
+    bos["no-sandbox"] = nil
+    bos["incognito"] = nil
+
+    user_data_dir = "temp/#{Digest::MD5.hexdigest(proxy_url.to_s)}"
+    user_data_dir = File.expand_path(user_data_dir)
+    puts "User Data Dir: #{user_data_dir}"
+    other_options["user_data_dir"] = user_data_dir
+    FileUtils.mkdir_p(user_data_dir)
   end
 
   browser = Ferrum::Browser.new(
@@ -49,12 +76,14 @@ def new_browser(proxy = nil)
       "disable-blink-features": "AutomationControlled",
       "webrtc-ip-handling-policy": "disable_non_proxied_udp",
       "force-webrtc-ip-handling-policy": nil,
+      **bos,
     # "timezone": "America/Denver",
     },
     # window_size: [3296, 3054],
     window_size: [1296, 2054],
+    proxy: proxy_parts,
     # args: [' --proxy-server=#{proxy}'],
-    **proxy_options,
+    **other_options,
   )
   browser.evaluate_on_new_document(script)
   browser.instance_variable_set(:@__proxy, proxy)
@@ -66,7 +95,7 @@ def new_browser(proxy = nil)
 
     if @__proxy
       puts "Setting timezone to: #{proxy["timezone_str"]}"
-      page.command("Emulation.setTimezoneOverride", timezoneId: proxy["timezone_str"])
+      page.command("Emulation.setTimezoneOverride", timezoneId: proxy.timezone_str)
     end
     page
   end

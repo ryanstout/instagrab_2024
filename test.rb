@@ -1,9 +1,15 @@
 # Open a browser for testing
 
+require_relative "./env"
 require_relative "./browser"
-require_relative "./proxies"
 
-proxy = Proxies.get_temp_random
+# proxy = ProxyPool.get_temp_random(true)
+# proxy = ProxyPool.last
+# proxy = ProxyPool.new(proxy: "socks5://51.91.197.157:3012", timezone_str: "America/Denver")
+
+# brightdata
+# proxy = ProxyPool.new(proxy: "http://brd-customer-hl_64fb6b1c-zone-isp_proxy1:94iku6bcrzxo@brd.superproxy.io:22225", timezone_str: "America/New_York")
+proxy = ProxyPool.new(proxy: "http://127.0.0.1:22225", timezone_str: "America/New_York")
 puts "PROXY: #{proxy.inspect}"
 
 browser = new_browser(proxy)

@@ -2,6 +2,7 @@
 
 require "httparty"
 require "json"
+require_relative "../env"
 
 class ProxyCheapAPI
   include HTTParty
@@ -101,10 +102,10 @@ class ProxyCheapAPI
     return data
   end
 
-  def order_mobile_price
+  def order_mobile_price(quantity)
     options = {
       headers: @headers,
-      body: order_mobile_options.to_json,
+      body: order_mobile_options(quantity).to_json,
     }
 
     response = self.class.post("/order/price", options)
@@ -144,7 +145,7 @@ class ProxyCheapAPI
   end
 
   def order_mobile(quantity)
-    final_price = order_mobile_price
+    final_price = order_mobile_price(quantity)
 
     if final_price != 50
       raise "Final price is not 50: #{final_price}"
@@ -156,7 +157,6 @@ class ProxyCheapAPI
     }
 
     response = self.class.post("/order/execute", options)
-    binding.irb
 
     # response looks like:
     # {"id"=>"c446c509-3581-11ef-a278-0ac79cee8129", "periodInMonths"=>"1", "totalPrice"=>"50"}
@@ -179,9 +179,6 @@ if __FILE__ == $0
 
   proxy_cheap = ProxyCheapAPI.new("498ceb96-c11a-42aa-8a2c-718a973651da", "83317f46-1cf4-4d5b-bf90-bf7668c34a0f")
 
-  # result = proxy_cheap.fetch_proxies
-  # binding.irb
-  # exit
   response = proxy_cheap.order_mobile(quantity)
 
   order_id = response["id"]

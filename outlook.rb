@@ -1,24 +1,23 @@
 # Create a hotmail account
+require_relative "./env"
 require_relative "./utils"
 require_relative "./browser"
-require_relative "./app/models/proxy_pool"
-require_relative "./app/models/user"
 require "faker"
 
-class Hotmail
-  def initialize(proxy, full_name, email_prefix, password)
+class Outlook
+  def initialize(browser, full_name, email_prefix, password)
     @wait_time = 3 * 60
 
-    @browser = new_browser(proxy)
+    @browser = browser
     @page = @browser.create_page
 
-    puts "Load page1"
+    puts "Load lading page"
     @page.go_to("https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook")
-    puts "Waiting for page"
-    sleep 45 + rand(5)
+    puts "Page loaded, Waiting for page"
+    sleep 4 + rand(5)
 
     # Stop the page loading
-    @page.stop
+    # @page.stop
 
     # Wait for span with text "Create free account"
     puts "Find button"
@@ -86,6 +85,9 @@ class Hotmail
 
     sleep 6 + rand(6)
 
+    puts "On robots?, press enter when done, or enter if it's birthday"
+    gets
+
     # Set Birthday
     set_birthday
 
@@ -133,12 +135,14 @@ if __FILE__ == $0
   full_name = Faker::Name.name
   email_prefix = (full_name.downcase.gsub(/[^a-z0-9. ]/, "").gsub(/\s+/, ".") + rand(100).to_s).gsub("..", ".").gsub("..", ".").gsub("..", ".").gsub("..", ".")
   password = Faker::Internet.password(min_length: 16, max_length: 25)
+  full_email = email_prefix + "@outlook.com"
 
   proxy = ProxyPool.get_random
+  # Create a browser with a registered proxy
+  browser = new_browser(proxy)
 
-  user = User.add_user(email_prefix, full_email, full_name, password, proxy)
-  Hotmail.new(proxy, full_name, email_prefix, password)
+  user = User.add_user(email_prefix, full_email, full_name, password, proxy.id)
+  Outlook.new(browser, full_name, email_prefix, password)
 
-  full_email = email_prefix + "@outlook.com"
-  user.signed_up(full_email, proxy)
+  user.signed_up!
 end

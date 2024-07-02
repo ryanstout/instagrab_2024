@@ -1,9 +1,9 @@
+require_relative "./env"
 require "digest"
 require "ferrum"
 require_relative "./onetime_pass"
 require_relative "./utils"
 require_relative "./browser"
-require_relative "./proxies"
 
 class Instagrab
   def url_hash(url)
@@ -29,13 +29,16 @@ class Instagrab
   end
 
   def initialize(proxy_url = nil)
-    @username = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field username`
-    @password = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field password`
-    @one_time = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field "one-time password"`
+    # @username = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field username`
+    # @password = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field password`
+    # @one_time = `op item get "instagram.com-lostupgrades" --vault "Ryans" --field "one-time password"`
+    @username = "darwin_marksdarwin_marks"
+    @password = "a2oEpTV1rY6AD9vSTlWnFAFS"
 
     @wait_time = 2 * 60
 
-    @browser = new_browser()
+    proxy = ProxyPool.last
+    @browser = new_browser(proxy)
     @page = @browser.create_page
 
     # @page.network.intercept #(request_stage: :Response)
@@ -46,8 +49,8 @@ class Instagrab
     # Regular expression to match .jpg URLs, including those with query parameters
     jpg_regex = /\.jpg(?:\?|$)/
 
-    # @page.go_to("https://www.instagram.com/shainblumphotography/")
-    @page.go_to("https://www.instagram.com/lostupgrades/")
+    @page.go_to("https://www.instagram.com/shainblumphotography/")
+    # @page.go_to("https://www.instagram.com/lostupgrades/")
 
     sleep 20 + rand(3)
 
@@ -144,12 +147,14 @@ class Instagrab
 
     sleep 2.3 + rand
 
-    one_time = fetch_otp(@one_time)
-    one_time_field = wait_for_selector(@page, 'input[aria-label="Security Code"]', @wait_time)
-    realistic_type(@page, one_time_field, one_time)
+    gets
 
-    sleep 0.2 + rand
-    one_time_field.type(:Enter)
+    # one_time = fetch_otp(@one_time)
+    # one_time_field = wait_for_selector(@page, 'input[aria-label="Security Code"]', @wait_time)
+    # realistic_type(@page, one_time_field, one_time)
+
+    # sleep 0.2 + rand
+    # one_time_field.type(:Enter)
 
     sleep 8 + rand
 

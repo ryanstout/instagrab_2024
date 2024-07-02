@@ -12,13 +12,9 @@ Pull instagram for fun
 
 `bundle exec ruby proxy_cheap/proxy_cheap.rb {quantity}`
 
-# 2. Create a user (outlook.com email)
+# 2. Create a user (outlook.com email) and IG
 
-`bundle exec ruby hotmail.rb`
-
-# 3. Signup for an instagram account
-
-`bundle exec ruby instagram_signup.rb`
+`bundle exec ruby create_user.rb`
 
 
 
@@ -43,3 +39,16 @@ darwin_marksdarwin_marks / a2oEpTV1rY6AD9vSTlWnFAFS
 
 
 
+
+# BrightData API token
+e9aaf622-e49f-4fe4-98c8-1eb73525b6d1
+
+
+
+
+proxy-login-automator -local_host '127.0.0.1' -local_port 22225 -remote_host 'brd.superproxy.io' -remote_port 22225 -usr 'brd-customer-hl_64fb6b1c-zone-isp_proxy1' -pwd '94iku6bcrzxo'
+
+tinyproxy -d -p 22225 -u 'brd-customer-hl_64fb6b1c-zone-isp_proxy1:94iku6bcrzxo' -r brd.superproxy.io:22225
+
+
+node proxy.js --local 22225 --remote "http://brd-customer-hl_64fb6b1c-zone-isp_proxy1:94iku6bcrzxo@brd.superproxy.io:22225"

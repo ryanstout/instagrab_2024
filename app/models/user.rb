@@ -2,7 +2,7 @@ require_relative "./base"
 
 class User < ActiveRecord::Base
   # Assuming the existence of a ProxyPool model that corresponds to the proxy_pool table
-  has_one :proxy_pool, foreign_key: "proxy_id"
+  belongs_to :proxy_pool, foreign_key: "proxy_id"
 
   # Class method to add a user
   def self.add_user(email_prefix, email, full_name, password, proxy_id)
@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   end
 
   # Instance method to mark user as signed up
-  def signed_up
+  def signed_up!
     update(state: 2)
     proxy_pool.update(state: 2) if proxy_pool
   end
