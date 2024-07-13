@@ -21,12 +21,12 @@ if __FILE__ == $0
   puts "Usage: ruby create_user.rb"
 
   # When resuming after a failure
-  user = User.first
-  proxy = user.proxy_pool
-  browser = new_browser(proxy)
-  InstagramSignup.new(browser, user.email, user.full_name, user.email_prefix, user.password)
+  # user = User.first
+  # proxy = user.proxy_pool
+  # browser = new_browser(proxy)
+  # InstagramSignup.new(browser, user.email, user.full_name, user.email_prefix, user.password)
 
-  exit()
+  # exit()
 
   # Create credentials
   full_name = Faker::Name.name
@@ -34,10 +34,10 @@ if __FILE__ == $0
   full_email = email_prefix + "@outlook.com"
   password = Faker::Internet.password(min_length: 16, max_length: 25)
 
-  full_name = "Lourie D'Amore"
-  email_prefix = "lourie.damore17"
-  full_email = "lourie.damore17@outlook.com"
-  password = "rKXosrL6Nz8CCvMFTHaJZAhb"
+  # full_name = "Lourie D'Amore"
+  # email_prefix = "lourie.damore17"
+  # full_email = "lourie.damore17@outlook.com"
+  # password = "rKXosrL6Nz8CCvMFTHaJZAhb"
 
   puts({
     full_name: full_name,
@@ -65,7 +65,13 @@ if __FILE__ == $0
     proxy.update(state: 2)
 
     # Now leave the tab open and do the IG signup
-    InstagramSignup.new(browser, user.email, user.full_name, user.email_prefix, user.password)
+
+    puts "Create Instagram User: #{email_prefix}\n#{email}\n#{password}"
+    gets
+
+    user.update(state: 3)
+
+    # InstagramSignup.new(browser, user.email, user.full_name, user.email_prefix, user.password)
   rescue Exception => e
     puts "\n\n--- Be sure to rest the proxy with id #{proxy.id} ---\n\n"
     raise e

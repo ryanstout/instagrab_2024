@@ -8,8 +8,16 @@ require_relative "./browser"
 # proxy = ProxyPool.new(proxy: "socks5://51.91.197.157:3012", timezone_str: "America/Denver")
 
 # brightdata
+
+# proxy = ProxyPool.where(id: 2).first
 # proxy = ProxyPool.new(proxy: "http://brd-customer-hl_64fb6b1c-zone-isp_proxy1:94iku6bcrzxo@brd.superproxy.io:22225", timezone_str: "America/New_York")
-proxy = ProxyPool.new(proxy: "http://127.0.0.1:22225", timezone_str: "America/New_York")
+# proxy.proxy = ProxyPool.maybe_use_forwarding_proxy(proxy.proxy)
+# proxy = ProxyPool.new(proxy: "http://127.0.0.1:22225", timezone_str: "America/New_York")
+# proxy = ProxyPool.new(proxy: "http://zkC3:2QLk@deeprig:16310", timezone_str: "America/Denver")
+proxy = ProxyPool.new(proxy: "socks5://instagrab:instagrab@192.168.1.231:10881", timezone_str: "America/Denver")
+# proxy = ProxyPool.new(proxy: "socks5://192.168.1.231:42376", timezone_str: "America/Denver")
+
+proxy.proxy = ProxyPool.maybe_use_forwarding_proxy(proxy.proxy)
 puts "PROXY: #{proxy.inspect}"
 
 browser = new_browser(proxy)

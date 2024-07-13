@@ -52,3 +52,11 @@ tinyproxy -d -p 22225 -u 'brd-customer-hl_64fb6b1c-zone-isp_proxy1:94iku6bcrzxo'
 
 
 node proxy.js --local 22225 --remote "http://brd-customer-hl_64fb6b1c-zone-isp_proxy1:94iku6bcrzxo@brd.superproxy.io:22225"
+
+
+Apr 14, 1993
+
+
+# How to setup an android phone for proxy:
+
+Install "Android Proxy Server" and "Network Share Tunnel"

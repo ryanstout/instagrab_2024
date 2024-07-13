@@ -50,10 +50,14 @@ def new_browser(proxy = nil)
     # # puts "Running with proxy: #{proxy_url}"
     # other_options[:proxy] = { host: $proxy.host, port: $proxy.port }
 
+    # For http
     other_options[:proxy] = proxy_parts
+
+    # For socks
     # bos = {
     #   "proxy-server": proxy_url,
     # }
+    # puts bos.inspect
   end
 
   if false
@@ -76,6 +80,9 @@ def new_browser(proxy = nil)
       "disable-blink-features": "AutomationControlled",
       "webrtc-ip-handling-policy": "disable_non_proxied_udp",
       "force-webrtc-ip-handling-policy": nil,
+      # "host-resolver-rules": "MAP * ~NOTFOUND , EXCLUDE proxy_address",
+      # "enable-features": "DnsOverHttps",
+      # "dns-over-https-servers": "https://1.1.1.1/dns-query",
       **bos,
     # "timezone": "America/Denver",
     },

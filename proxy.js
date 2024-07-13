@@ -20,6 +20,8 @@ const argv = yargs(hideBin(process.argv))
     .alias('help', 'h')
     .argv;
 
+console.log(argv)
+
 const localPort = argv.local;
 const remoteProxyUrl = argv.remote;
 const newProxyUrl = `http://127.0.0.1:${localPort}`;
